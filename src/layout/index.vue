@@ -8,22 +8,32 @@
       </div>
       <app-main />
     </div>
+    <div class="footerDiv">
+      <MusicPlay ref="musicDrawer" :src="src" :is-open="isOpen" />
+    </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { Navbar, Sidebar, AppMain } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
+import MusicPlay from '@/components/music/MusicPlay'
 
 export default {
   name: 'Layout',
   components: {
     Navbar,
     Sidebar,
-    AppMain
+    AppMain,
+    MusicPlay
   },
   mixins: [ResizeMixin],
   computed: {
+    ...mapGetters([
+      'src',
+      'isOpen'
+    ]),
     sidebar() {
       return this.$store.state.app.sidebar
     },
@@ -41,6 +51,9 @@ export default {
         mobile: this.device === 'mobile'
       }
     }
+  },
+  updated() {
+    // this.$root.Bus.on('openDrawer', this.openD())
   },
   methods: {
     handleClickOutside() {
@@ -89,5 +102,16 @@ export default {
 
   .mobile .fixed-header {
     width: 100%;
+  }
+  .footerDiv{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 15px;
+    background-color:transparent;
+    cursor: pointer;
+  }
+  .footerDiv:hover {
+    background-color:rgba(120, 120, 120, .3)
   }
 </style>

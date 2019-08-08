@@ -18,6 +18,7 @@ const mutations = {
 
 const actions = {
   changeSetting({ commit }, data) {
+    console.log('commit', data)
     commit('CHANGE_SETTING', data)
   }
 }

@@ -1,53 +1,58 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="form" label-width="120px">
-      <el-form-item label="Activity name">
-        <el-input v-model="form.name" />
-      </el-form-item>
-      <el-form-item label="Activity zone">
-        <el-select v-model="form.region" placeholder="please select your zone">
-          <el-option label="Zone one" value="shanghai" />
-          <el-option label="Zone two" value="beijing" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="Activity time">
-        <el-col :span="11">
-          <el-date-picker v-model="form.date1" type="date" placeholder="Pick a date" style="width: 100%;" />
-        </el-col>
-        <el-col :span="2" class="line">-</el-col>
-        <el-col :span="11">
-          <el-time-picker v-model="form.date2" type="fixed-time" placeholder="Pick a time" style="width: 100%;" />
-        </el-col>
-      </el-form-item>
-      <el-form-item label="Instant delivery">
-        <el-switch v-model="form.delivery" />
-      </el-form-item>
-      <el-form-item label="Activity type">
-        <el-checkbox-group v-model="form.type">
-          <el-checkbox label="Online activities" name="type" />
-          <el-checkbox label="Promotion activities" name="type" />
-          <el-checkbox label="Offline activities" name="type" />
-          <el-checkbox label="Simple brand exposure" name="type" />
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="Resources">
-        <el-radio-group v-model="form.resource">
-          <el-radio label="Sponsor" />
-          <el-radio label="Venue" />
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="Activity form">
-        <el-input v-model="form.desc" type="textarea" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">Create</el-button>
-        <el-button @click="onCancel">Cancel</el-button>
-      </el-form-item>
-    </el-form>
+    <div>歌单列表</div>
+    <!-- <audio :src="msrc" controls autoplay>你的浏览器不支持audio标签</audio> -->
+    <el-table
+      ref="multipleTable"
+      :data="tableData"
+      tooltip-effect="dark"
+      style="width: 100%"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column
+        type="selection"
+        width="55"
+      />
+      <el-table-column
+        label="歌手"
+      >
+        <template slot-scope="scope">
+          <div v-if="!!scope.row.artists">
+            {{ scope.row.artists[0].name }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="歌名"
+      >
+        <template slot-scope="scope">
+          <div>
+            <a @click="playMusic(scope.row)">{{ scope.row.name }}</a>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="lMusic"
+        label="时长"
+      >
+        <template slot-scope="scope">
+          <div>
+            {{ fromatDate(scope.row.lMusic.playTime) }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="id"
+        label="歌曲id"
+        show-overflow-tooltip
+      />
+    </el-table>
   </div>
 </template>
 
 <script>
+import api from '@/api'
+import moment from 'moment'
 export default {
   data() {
     return {
@@ -60,10 +65,44 @@ export default {
         type: [],
         resource: '',
         desc: ''
-      }
+      },
+      tableData: [],
+      multipleSelection: [],
+      msrc: ''
     }
   },
+  created() {
+    this.requestData()
+  },
   methods: {
+    fromatDate(time) {
+      return moment(time).format('mm:ss')
+    },
+    async requestData() {
+      const res = await api.getSongList('2795857062')
+      // console.log(res)
+      if (res.data.code === 200) {
+        // console.log(res.data.data.tracks)
+        this.tableData = res.data.data.tracks
+      }
+    },
+    handleSelectionChange(val) {
+      // console.log(val)
+      this.multipleSelection = val
+    },
+    async playMusic(item) {
+      // console.log(item)
+      const res = await api.getSongPlay({ id: item.id, quality: 'flac' })
+      // console.log(res.request.responseURL, res.status)
+
+      this.msrc = res.request.responseURL
+      if (res.status === 200) {
+        this.$store.dispatch('music/changeSrc', { url: res.request.responseURL })
+        this.$store.dispatch('music/openDrawer')
+      } else {
+        this.$message(res.status)
+      }
+    },
     onSubmit() {
       this.$message('submit!')
     },

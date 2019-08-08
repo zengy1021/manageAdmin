@@ -51,7 +51,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '谢超超dashboard', icon: 'dashboard' }
+      meta: { title: '热门歌单', icon: 'dashboard' }
     }]
   },
 
@@ -85,7 +85,7 @@ export const constantRoutes = [
         path: 'index',
         name: 'Form',
         component: () => import('@/views/form/index'),
-        meta: { title: '谢超超form', icon: 'form' }
+        meta: { title: '歌单列表', icon: 'form' }
       }
     ]
   },
