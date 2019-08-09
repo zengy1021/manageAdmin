@@ -44,7 +44,7 @@ export const constantRoutes = [
   },
 
   {
-    path: '/',
+    path: '/dashboard',
     component: Layout,
     redirect: '/dashboard',
     children: [{
@@ -52,6 +52,17 @@ export const constantRoutes = [
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
       meta: { title: '热门歌单', icon: 'dashboard' }
+    }]
+  },
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/searchmusic',
+    children: [{
+      path: 'searchmusic',
+      name: 'Searchmusic',
+      component: () => import('@/views/searchmusic/index'),
+      meta: { title: '歌曲搜索', icon: 'service' }
     }]
   },
 
@@ -66,7 +77,7 @@ export const constantRoutes = [
         path: 'table',
         name: 'Table',
         component: () => import('@/views/table/index'),
-        meta: { title: '谢超超table', icon: 'table' }
+        meta: { title: '谢超超table', icon: 'loading' }
       },
       {
         path: 'tree',

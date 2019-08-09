@@ -105,13 +105,14 @@ export default {
   }
   .footerDiv{
     position: fixed;
-    bottom: 0;
+    bottom: 5px;
     width: 100%;
     height: 15px;
+    z-index: 100000;
     background-color:transparent;
     cursor: pointer;
   }
   .footerDiv:hover {
-    background-color:rgba(120, 120, 120, .3)
+   color: #409dfc
   }
 </style>

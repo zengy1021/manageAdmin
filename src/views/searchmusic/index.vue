@@ -1,7 +1,31 @@
 <template>
-  <div class="app-container">
-    <div>歌单列表</div>
-    <!-- <audio :src="msrc" controls autoplay>你的浏览器不支持audio标签</audio> -->
+  <div>
+    <el-row :gutter="24" style="padding:15px">
+      <el-col :span="12">
+        <div>
+          <el-select
+            v-model="value"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="请输入歌曲名"
+            :remote-method="remoteMethod"
+            :loading="loading"
+            :clearable="true"
+            size="medium"
+            @change="selectMusic"
+            @clear="clearSearch"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </div>
+      </el-col>
+    </el-row>
     <el-table
       ref="multipleTable"
       :data="tableData"
@@ -17,8 +41,8 @@
         label="歌手"
       >
         <template slot-scope="scope">
-          <div v-if="!!scope.row.artists">
-            {{ scope.row.artists[0].name }}
+          <div v-if="!!scope.row.ar">
+            {{ scope.row.ar[0].name }}
           </div>
         </template>
       </el-table-column>
@@ -37,7 +61,7 @@
       >
         <template slot-scope="scope">
           <div>
-            {{ fromatDate(scope.row.lMusic.playTime) }}
+            {{ fromatDate(scope.row.dt) }}
           </div>
         </template>
       </el-table-column>
@@ -49,49 +73,50 @@
     </el-table>
   </div>
 </template>
-
 <script>
 import api from '@/api'
 import moment from 'moment'
 export default {
+  name: 'Searchmusic',
   data() {
     return {
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
+      value: '',
+      options: [],
+      loading: false,
       tableData: [],
-      multipleSelection: [],
-      msrc: ''
+      multipleSelection: []
+
     }
   },
-  created() {
-    this.requestData()
-  },
   methods: {
+    async selectMusic(val) {
+    //   console.log()
+      if (val.split(',')[0]) {
+        const res = await api.searchMusicList(val.split(',')[0])
+        if (res.data.code === 200) {
+          this.tableData = res.data.data.songs
+        }
+      }
+    },
     fromatDate(time) {
       return moment(time).format('mm:ss')
     },
-    async requestData() {
-      const res = await api.getSongList('2795857062')
-      // console.log(res)
-      if (res.data.code === 200) {
-        // console.log(res.data.data.tracks)
-        this.tableData = res.data.data.tracks
+    async remoteMethod(query) {
+      if (query) {
+        const res = await api.searchMusicList(query)
+        // console.log(res)
+        if (res.data.code === 200) {
+          this.options = res.data.data.songs
+          //   console.log(res.data.data.songs)
+          this.options.map(item => {
+            item.value = item.name + ',' + item.id
+            item.label = item.name + ' ' + item.ar[0].name
+          })
+        }
       }
     },
-    handleSelectionChange(val) {
-      // console.log(val)
-      this.multipleSelection = val
-    },
     async playMusic(item) {
-      // console.log(item)
+    //   console.log(item)
       const res = await api.getSongPlay({ id: item.id, quality: 'flac' })
       // console.log(res.request.responseURL, res.status)
 
@@ -105,22 +130,13 @@ export default {
       this.$store.dispatch('music/changeSrc', { url: res.request.responseURL })
       this.$store.dispatch('music/openDrawer')
     },
-    onSubmit() {
-      this.$message('submit!')
+    clearSearch() {
+      this.options = []
     },
-    onCancel() {
-      this.$message({
-        message: 'cancel!',
-        type: 'warning'
-      })
+    handleSelectionChange(val) {
+      // console.log(val)
+      this.multipleSelection = val
     }
   }
 }
 </script>
-
-<style scoped>
-.line{
-  text-align: center;
-}
-</style>
-

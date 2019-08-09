@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div style="text-align:center" @click="drawerBtn">top</div>
+    <div style="text-align:center;height:30px;" @click="drawerBtn">
+      <i v-if="!drawer" class="el-icon-service" />
+    </div>
     <el-drawer
       title="music"
       :visible.sync="drawer"

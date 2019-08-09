@@ -11,8 +11,10 @@ const api = {
     return axios.get(`https://v1.itooi.cn/netease/songList?id=${id}`)
   },
   getSongPlay(params) { // 获取音乐播放地址
-    console.log(params)
     return axios.get(`https://v1.itooi.cn/netease/url?id=${params.id}&quality=${params.quality}`)
+  },
+  searchMusicList(key) { // 搜索音乐
+    return axios.get(`https://v1.itooi.cn/netease/search?keyword=${key}&type=song&pageSize=20`)
   }
 
 }
