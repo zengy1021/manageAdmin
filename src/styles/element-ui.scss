@@ -42,3 +42,11 @@
     display: block
   }
 }
+
+.el-table th, .el-table tr {
+  background-color: transparent;
+}
+
+.el-table, .el-table__expanded-cell {
+  background-color: transparent;
+}

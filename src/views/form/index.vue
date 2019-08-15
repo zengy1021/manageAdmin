@@ -17,8 +17,9 @@
         label="歌手"
       >
         <template slot-scope="scope">
-          <div v-if="!!scope.row.artists">
-            {{ scope.row.artists[0].name }}
+          <div v-if="!!scope.row.artists" class="singerStyle">
+            <img :src="scope.row.album.blurPicUrl" alt="">
+            <div>{{ scope.row.artists[0].name }}</div>
           </div>
         </template>
       </el-table-column>
@@ -118,9 +119,20 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .line{
   text-align: center;
+}
+.singerStyle{
+  display: flex;
+  &>div{
+    line-height: 60px;
+  }
+  &>img{
+    width: 60px;
+    height: 60px;
+    margin-right:15px;
+  }
 }
 </style>
 

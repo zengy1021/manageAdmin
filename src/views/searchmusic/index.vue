@@ -41,8 +41,9 @@
         label="歌手"
       >
         <template slot-scope="scope">
-          <div v-if="!!scope.row.ar">
-            {{ scope.row.ar[0].name }}
+          <div v-if="!!scope.row.ar" style="font-size:0">
+            <img v-if="scope.row.al.picUrl" :src="scope.row.al.picUrl" alt="" class="picStyle">
+            <span style="display:inline-block;font-size:14px;height:30px;line-height:30px"> {{ scope.row.ar[0].name }}</span>
           </div>
         </template>
       </el-table-column>
@@ -140,3 +141,11 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+    .picStyle{
+        width:30px;
+        height:30px;
+        vertical-align: top;
+        margin-right:15px
+    }
+</style>
