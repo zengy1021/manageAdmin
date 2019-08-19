@@ -17,9 +17,9 @@
         </div>
         <div ref="progress" class="line-wrap">
           <div class="bg-line" />
-          <div class="cache-line" :style="{width:cache+'px'}" />
-          <div class="real-line" :style="{width:percentage+'px'}" />
-          <svg-icon v-drag icon-class="circle" :style="{left:circleLeft+'px'}" class="icon-circle" />
+          <div class="cache-line" :style="{width:cache+'%'}" />
+          <div class="real-line" :style="{width:percentage+'%'}" />
+          <svg-icon v-drag icon-class="circle" :style="{left:circleLeft+'%'}" class="icon-circle" />
           <span class="time">{{ currentTime | formatDuring }}/{{ totalTime | formatDuring }}</span>
         </div>
         <div class="other" />
@@ -58,7 +58,8 @@ export default {
             $this.circleLeft = e.pageX - widthLeft - 5
           }
           const scale = $this.circleLeft / width
-          $this.percentage = width * scale
+          $this.circleLeft = scale * 100
+          $this.percentage = scale * 100
           $this.currentTime = $this.totalTime * scale
         }
         document.onmouseup = function() {
@@ -110,12 +111,11 @@ export default {
     updateTime(e) {
       const buffered = e.target.buffered.end(e.target.buffered.length - 1)
       this.currentTime = e.target.currentTime
-      const width = this.$refs.progress.offsetWidth
       const scale = parseInt(e.target.currentTime) / parseInt(e.target.duration)
       const cacheScale = parseInt(buffered) / parseInt(e.target.duration)
-      this.percentage = scale * width
-      this.circleLeft = scale * width - 8
-      this.cache = cacheScale * width
+      this.percentage = scale * 100
+      this.circleLeft = scale * 100
+      this.cache = cacheScale * 100
       if (this.percentage === 100) {
         this.hasPlay = false
       }
@@ -190,6 +190,7 @@ export default {
           color: #409eff;
           cursor: pointer;
           z-index: 99;
+          margin-left: -8px;
         }
         .time{
           position: absolute;
