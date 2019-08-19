@@ -94,3 +94,15 @@ Modern browsers and Internet Explorer 10+.
 [MIT](https://github.com/PanJiaChen/vue-admin-template/blob/master/LICENSE) license.
 
 Copyright (c) 2017-present PanJiaChen
+
+这段代码放在左下角设置里面的settings.json里面 然后把eslint的插件打开重启编辑器就可以保存自动编译eslint了
+
+{
+    "eslint.autoFixOnSave": true,
+    "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "html",    {
+    "language": "vue",
+    "autoFix": true    }    ],
+}

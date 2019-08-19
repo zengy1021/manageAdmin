@@ -8,12 +8,12 @@
       :visible.sync="drawer"
       :direction="direction"
     >
-      <audio @canplay="canplay" style="display:none" :src="src" ref="audio" @timeupdate="updateTime" controls autoplay>你的浏览器不支持audio标签</audio>
+      <audio ref="audio" style="display:none" :src="src" controls autoplay @canplay="canplay" @timeupdate="updateTime">你的浏览器不支持audio标签</audio>
       <div class="wrap">
         <div class="btns">
-          <svg-icon icon-class="last" class="icon"/>
-          <svg-icon :icon-class="hasPlay?'suspend':'play'" class="icon" @click="onPlayType"/>
-          <svg-icon icon-class="next" class="icon"/>
+          <svg-icon icon-class="last" class="icon" />
+          <svg-icon :icon-class="hasPlay?'suspend':'play'" class="icon" @click="onPlayType" />
+          <svg-icon icon-class="next" class="icon" />
         </div>
         <div class="line-wrap" ref="progress">
           <div class="bg-line"></div>
@@ -23,7 +23,7 @@
           <span class="time">{{currentTime | formatDuring}}/{{totalTime | formatDuring}}</span>
         </div>
         <div class="other">
-          
+
         </div>
       </div>
     </el-drawer>
@@ -56,9 +56,6 @@ export default {
       circleLeft:0
     }
   },
-  created(){
-    $this = this;
-  },
   watch: {
     isOpen(val) {
       if (val) {
@@ -69,7 +66,10 @@ export default {
       if (!val) {
         this.$store.dispatch('music/closeDrawer')
       }
-    },
+    }
+  },
+  created() {
+    $this = this
   },
   methods: {
     updateTime(e){
@@ -85,13 +85,13 @@ export default {
         this.hasPlay = false;
       }
     },
-    onPlayType(){
-      if(this.hasPlay){
-        this.$refs.audio.pause();
-      }else{
-        this.$refs.audio.play();
+    onPlayType() {
+      if (this.hasPlay) {
+        this.$refs.audio.pause()
+      } else {
+        this.$refs.audio.play()
       }
-      this.hasPlay = !this.hasPlay;
+      this.hasPlay = !this.hasPlay
     },
     drawerBtn() {
       this.drawer = !this.drawer
@@ -137,7 +137,7 @@ export default {
             }
         }
     }
-  },
+  }
 }
 </script>
 
