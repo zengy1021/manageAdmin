@@ -15,9 +15,11 @@
           <svg-icon :icon-class="hasPlay?'suspend':'play'" class="icon" @click="onPlayType"/>
           <svg-icon icon-class="next" class="icon"/>
         </div>
-        <div class="line-wrap">
-          <el-progress ref="progress" :percentage="percentage" :show-text="false" type="line" class="line"></el-progress>
-          <svg-icon v-drag="" icon-class="circle" :style="{left:circleLeft+'px'}" class="icon-circle"/>
+        <div class="line-wrap" ref="progress">
+          <div class="bg-line"></div>
+          <div class="cache-line" :style="{width:cache+'px'}"></div>
+          <div class="real-line" :style="{width:percentage+'px'}"></div>
+          <svg-icon v-drag icon-class="circle" :style="{left:circleLeft+'px'}" class="icon-circle"/>
           <span class="time">{{currentTime | formatDuring}}/{{totalTime | formatDuring}}</span>
         </div>
         <div class="other">
@@ -50,6 +52,7 @@ export default {
       currentTime:0,
       totalTime:0,
       percentage:0,
+      cache:0,
       circleLeft:0
     }
   },
@@ -70,11 +73,14 @@ export default {
   },
   methods: {
     updateTime(e){
+      const buffered = e.target.buffered.end(e.target.buffered.length -1);
       this.currentTime = e.target.currentTime;
-      const width = this.$refs.progress.$el.offsetWidth;
+      const width = this.$refs.progress.offsetWidth;
       const scale = parseInt(e.target.currentTime) / parseInt(e.target.duration);
-      this.percentage = scale*100;
+      const cacheScale = parseInt(buffered) / parseInt(e.target.duration);
+      this.percentage = scale*width;
       this.circleLeft = scale*width-8;
+      this.cache = cacheScale*width;
       if(this.percentage == 100){
         this.hasPlay = false;
       }
@@ -109,6 +115,7 @@ export default {
     drag(el, bindings){
       if(!$this.totalTime) return;
         el.onmousedown = function(e){
+            $this.$refs.audio.pause();
             const width = e.path[2].offsetWidth;
             const widthLeft = e.path[2].offsetLeft;
             document.onmousemove = function (e){
@@ -120,9 +127,12 @@ export default {
                   $this.circleLeft = e.pageX - widthLeft-5;
                 }
                 const scale = $this.circleLeft/width;
-                $this.percentage = 100*scale;
+                $this.percentage = width*scale;
+                $this.currentTime = $this.totalTime*scale;
             }
             document.onmouseup = function(){
+              $this.$refs.audio.currentTime = $this.currentTime;
+              $this.$refs.audio.play();
               document.onmousemove = document.onmouseup = null;
             }
         }
@@ -158,6 +168,22 @@ export default {
         flex: 1;
         margin:0 15px;
         position: relative;
+        .bg-line,.cache-line,.real-line{
+          width: 100%;
+          height: 6px;
+          border-radius: 100px;
+          position: absolute;
+          background-color: #ebeef5;
+          z-index: 1;
+        }
+        .cache-line{
+          background-color: #909399;
+          z-index: 2;
+        }
+        .real-line{
+          background-color: #1AAD19;
+          z-index: 3;
+        }
         .icon-circle{
           position: absolute;
           left: 0;
@@ -165,6 +191,7 @@ export default {
           font-size: 16px;
           color: #409eff;
           cursor: pointer;
+          z-index: 99;
         }
         .time{
           position: absolute;
