@@ -16,9 +16,9 @@
           <svg-icon icon-class="next" class="icon" />
         </div>
         <div ref="progress" class="line-wrap">
-          <div class="bg-line" />
+          <div class="bg-line" @click="changeCurrentTime" />
           <div class="cache-line" :style="{width:cache+'%'}" />
-          <div class="real-line" :style="{width:percentage+'%'}" />
+          <div class="real-line" :style="{width:percentage+'%'}" @click="changeCurrentTime" />
           <svg-icon v-drag icon-class="circle" :style="{left:circleLeft+'%'}" class="icon-circle" />
           <span class="time">{{ currentTime | formatDuring }}/{{ totalTime | formatDuring }}</span>
         </div>
@@ -108,6 +108,14 @@ export default {
     $this = this
   },
   methods: {
+    changeCurrentTime(e) {
+      if (!this.totalTime) return
+      const width = this.$refs.progress.offsetWidth
+      const scale = parseInt(e.offsetX) / parseInt(width)
+      this.percentage = scale * 100
+      this.circleLeft = scale * 100
+      this.currentTime = this.totalTime * scale
+    },
     updateTime(e) {
       const buffered = e.target.buffered.end(e.target.buffered.length - 1)
       this.currentTime = e.target.currentTime
@@ -121,6 +129,7 @@ export default {
       }
     },
     onPlayType() {
+      if (!this.totalTime) return
       if (this.hasPlay) {
         this.$refs.audio.pause()
       } else {
@@ -166,6 +175,8 @@ export default {
         flex: 1;
         margin:0 15px;
         position: relative;
+        height: 6px;
+        cursor: pointer;
         .bg-line,.cache-line,.real-line{
           width: 100%;
           height: 6px;
@@ -188,7 +199,7 @@ export default {
           top: -5px;
           font-size: 16px;
           color: #409eff;
-          cursor: pointer;
+          // cursor: pointer;
           z-index: 99;
           margin-left: -8px;
         }
