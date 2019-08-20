@@ -50,10 +50,11 @@ export default {
         const width = e.path[2].offsetWidth
         const widthLeft = e.path[2].offsetLeft
         document.onmousemove = function(e) {
+          console.log(e)
           if (e.pageX - widthLeft <= 0) {
             $this.circleLeft = 0
           } else if (e.pageX - widthLeft >= width) {
-            $this.circleLeft = width - 5
+            $this.circleLeft = width
           } else {
             $this.circleLeft = e.pageX - widthLeft - 5
           }
@@ -61,10 +62,15 @@ export default {
           $this.circleLeft = scale * 100
           $this.percentage = scale * 100
           $this.currentTime = $this.totalTime * scale
+          console.log($this.circleLeft, $this.percentage, $this.currentTime)
         }
         document.onmouseup = function() {
           $this.$refs.audio.currentTime = $this.currentTime
-          $this.$refs.audio.play()
+          if ($this.circleLeft === 100) {
+            $this.$refs.audio.pause()
+          } else {
+            $this.$refs.audio.play()
+          }
           document.onmousemove = document.onmouseup = null
         }
       }
