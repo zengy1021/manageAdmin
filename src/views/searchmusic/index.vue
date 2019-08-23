@@ -117,19 +117,20 @@ export default {
       }
     },
     async playMusic(item) {
-    //   console.log(item)
-      const res = await api.getSongPlay({ id: item.id, quality: 'flac' })
+      this.$store.dispatch('music/changeMusicList', [item])
+      this.$store.dispatch('music/openDrawer')
+      // const res = await api.getSongPlay({ id: item.id, quality: 'flac' })
       // console.log(res.request.responseURL, res.status)
 
-      this.msrc = res.request.responseURL
+      // this.msrc = res.request.responseURL
       // if (res.status === 200) {
       //   this.$store.dispatch('music/changeSrc', { url: res.request.responseURL })
       //   this.$store.dispatch('music/openDrawer')
       // } else {
       //   this.$message(res.status)
       // }
-      this.$store.dispatch('music/changeSrc', { url: res.request.responseURL })
-      this.$store.dispatch('music/openDrawer')
+      // this.$store.dispatch('music/changeSrc', { url: res.request.responseURL })
+      // this.$store.dispatch('music/openDrawer')
     },
     clearSearch() {
       this.options = []

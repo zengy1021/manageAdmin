@@ -1,6 +1,7 @@
 <template>
   <div v-if="isExternal" :style="styleExternalIcon" class="svg-external-icon svg-icon" v-on="$listeners" />
   <svg v-else :class="svgClass" aria-hidden="true" v-on="$listeners">
+    <title>{{ title }}</title>
     <use :xlink:href="iconName" />
   </svg>
 </template>
@@ -17,6 +18,10 @@ export default {
       required: true
     },
     className: {
+      type: String,
+      default: ''
+    },
+    title: {
       type: String,
       default: ''
     }
