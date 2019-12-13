@@ -14,6 +14,8 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+
+import EventEmit from '@/utils/eventEmitter.js'
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -30,6 +32,9 @@ if (process.env.NODE_ENV === 'production') {
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale })
 Vue.config.productionTip = false
+// Vue.use(EventEmit)
+
+Vue.prototype.$eventEmit = EventEmit
 
 new Vue({
   el: '#app',
